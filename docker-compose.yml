@@ -1,0 +1,48 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./artifacts:/app/artifacts
+      - ./data:/app/data
+      - ./models:/app/models
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+    depends_on:
+      mlflow:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "python", "docker/healthcheck_api.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 600s
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./artifacts:/app/artifacts
+      - ./data:/app/data
+      - ./models:/app/models
+    environment:
+      API_URL: http://api:8000
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "docker/healthcheck_dashboard.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.9.2
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:////tmp/mlflow.db --default-artifact-root /tmp/mlartifacts
+    ports:
+      - "5000:5000"

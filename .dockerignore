@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+artifacts/
+data/
+models/
+notebooks/
+tests/
+.github/
+.mypy_cache/
+.git/

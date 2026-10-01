@@ -1,0 +1,64 @@
+{
+  "best_model": "random_forest",
+  "primary_metric": "roc_auc",
+  "models": {
+    "logistic_regression": {
+      "accuracy": 0.7111,
+      "precision": 0.6316,
+      "recall": 0.3871,
+      "f1": 0.48,
+      "auc_roc": 0.6878,
+      "val_auc_roc": 0.7609,
+      "cv_primary_mean": 0.6917
+    },
+    "random_forest": {
+      "accuracy": 0.6889,
+      "precision": 0.6154,
+      "recall": 0.2581,
+      "f1": 0.3636,
+      "auc_roc": 0.7146,
+      "val_auc_roc": 0.7572,
+      "cv_primary_mean": 0.6381
+    },
+    "xgboost": {
+      "accuracy": 0.6444,
+      "precision": 0.4286,
+      "recall": 0.0968,
+      "f1": 0.1579,
+      "auc_roc": 0.6741,
+      "val_auc_roc": 0.73,
+      "cv_primary_mean": 0.6454
+    },
+    "neural_network": {
+      "accuracy": 0.7333,
+      "precision": 0.7333,
+      "recall": 0.3548,
+      "f1": 0.4783,
+      "auc_roc": 0.6588,
+      "val_auc_roc": 0.7617,
+      "cv_primary_mean": 0.6942
+    }
+  },
+  "feature_names": [
+    "login_frequency_last_30d",
+    "avg_session_duration_min",
+    "feature_usage_score",
+    "support_tickets_last_90d",
+    "total_purchases",
+    "avg_invoice_amount",
+    "late_payments_count",
+    "customer_lifetime_value",
+    "avg_days_since_last_login",
+    "image_quality_score",
+    "payment_method_bank_transfer",
+    "payment_method_credit_card",
+    "payment_method_crypto",
+    "payment_method_paypal",
+    "subscription_tier_basic",
+    "subscription_tier_enterprise",
+    "subscription_tier_pro"
+  ],
+  "n_train": 433,
+  "n_val": 77,
+  "n_test": 90
+}

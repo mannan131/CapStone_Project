@@ -1,0 +1,16 @@
+FROM python:3.11-slim AS builder
+WORKDIR /app
+COPY requirements.txt .
+# CPU-only torch keeps the image lean; the app falls back to sklearn MLP without it.
+RUN pip install --no-cache-dir --prefix=/install torch --index-url https://download.pytorch.org/whl/cpu \
+    && pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+FROM python:3.11-slim AS runtime
+WORKDIR /app
+COPY --from=builder /install /usr/local
+COPY configs/ configs/
+COPY src/ src/
+COPY docker/ docker/
+COPY pyproject.toml ./
+EXPOSE 8000
+ENTRYPOINT ["python", "docker/api_entrypoint.py"]
