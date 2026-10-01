@@ -1,0 +1,90 @@
+project:
+  name: "churn-intelligence-engine"
+  version: "0.1.0"
+  random_seed: 42
+
+paths:
+  raw_customer_data: "data/synthetic/customers.csv"
+  raw_images_dir: "data/raw_images"
+  processed_data_dir: "data/processed"
+  models_dir: "models"
+  scaler_path: "models/artifacts/scaler.joblib"
+  encoder_path: "models/artifacts/encoder.joblib"
+  mlflow_tracking_uri: "http://localhost:5000"
+
+data_schema:
+  id_column: "customer_id"
+  target_column: "churned"
+  behavioral_features:
+    - login_frequency_last_30d
+    - avg_session_duration_min
+    - feature_usage_score
+    - support_tickets_last_90d
+  transactional_features:
+    - total_purchases
+    - avg_invoice_amount
+    - late_payments_count
+    - payment_method       # categorical
+    - subscription_tier    # categorical
+  categorical_features:
+    - payment_method
+    - subscription_tier
+  clv_column: "customer_lifetime_value"
+
+image_quality:
+  weights:
+    blur: 0.30
+    resolution: 0.25
+    contrast: 0.20
+    sharpness: 0.25
+  blur_threshold: 100.0          # variance of Laplacian below this = blurry
+  min_resolution: [640, 480]     # width, height
+  target_resolution: [1920, 1080]
+  contrast_min_std: 40.0
+  missing_image_default_score: 0.5   # imputed when no image provided
+
+feature_fusion:
+  scaling_method: "standard"     # standard | minmax
+  encoding_method: "onehot"      # onehot | target
+  image_score_column: "image_quality_score"
+
+model_training:
+  test_size: 0.15
+  val_size: 0.15
+  stratify: true
+  cv_folds: 5
+  optuna_trials: 30
+  models_to_train:
+    - logistic_regression
+    - random_forest
+    - xgboost
+    - neural_network
+  primary_metric: "roc_auc"
+  neural_network:
+    hidden_layers: [64, 32, 16]
+    dropout: 0.3
+    epochs: 50
+    batch_size: 32
+    early_stopping_patience: 5
+
+shap:
+  top_n_features: 5
+  explainer_type_map:
+    logistic_regression: "kernel"
+    random_forest: "tree"
+    xgboost: "tree"
+    neural_network: "deep"
+
+recommendation_engine:
+  rules_path: "configs/cause_action_rules.yaml"
+  max_actions_per_customer: 3
+  priority_formula: "churn_probability * customer_lifetime_value"
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  log_level: "info"
+
+dashboard:
+  port: 8501
+  top_n_at_risk_default: 20

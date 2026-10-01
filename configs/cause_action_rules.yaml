@@ -1,0 +1,100 @@
+rules:
+  - cause: low_image_quality
+    condition:
+      feature: image_quality_score
+      operator: lt
+      threshold: 0.45
+    actions:
+      - action: "Request updated high-resolution product photos"
+        detail: "Image quality score below 0.45 hurts buyer trust; ask seller for brighter, sharper photos."
+        priority: 1
+      - action: "Offer free product photography enhancement"
+        detail: "Apply auto-enhancement or schedule a photo refresh."
+        priority: 2
+
+  - cause: declining_login_frequency
+    condition:
+      feature: login_frequency_last_30d
+      operator: lt
+      threshold: 3.0
+    actions:
+      - action: "Send re-engagement email with personalized highlights"
+        detail: "Fewer than 3 logins in 30 days signals disengagement."
+        priority: 1
+      - action: "Offer onboarding refresher call"
+        detail: "Proactive check-in to rediscover value."
+        priority: 2
+
+  - cause: low_session_duration
+    condition:
+      feature: avg_session_duration_min
+      operator: lt
+      threshold: 5.0
+    actions:
+      - action: "Push feature-discovery tutorial"
+        detail: "Short sessions suggest low value discovery."
+        priority: 2
+
+  - cause: low_feature_usage
+    condition:
+      feature: feature_usage_score
+      operator: lt
+      threshold: 35.0
+    actions:
+      - action: "Recommend relevant unused features"
+        detail: "Usage score below 35/100 predicts churn."
+        priority: 1
+
+  - cause: high_support_tickets
+    condition:
+      feature: support_tickets_last_90d
+      operator: gt
+      threshold: 3.0
+    actions:
+      - action: "Escalate to customer success manager"
+        detail: "More than 3 tickets in 90 days indicates unresolved pain."
+        priority: 1
+      - action: "Offer service credit or apology voucher"
+        detail: "Goodwill gesture to recover trust."
+        priority: 2
+
+  - cause: late_payments
+    condition:
+      feature: late_payments_count
+      operator: gt
+      threshold: 1.0
+    actions:
+      - action: "Offer flexible payment plan"
+        detail: "Repeated late payments signal financial friction."
+        priority: 1
+      - action: "Send payment reminder with autopay incentive"
+        detail: "Nudge toward autopay with small discount."
+        priority: 2
+
+  - cause: low_purchase_activity
+    condition:
+      feature: total_purchases
+      operator: lt
+      threshold: 2.0
+    actions:
+      - action: "Send loyalty discount (10% off next order)"
+        detail: "Few purchases suggest weak habit formation."
+        priority: 1
+
+  - cause: dormant_account
+    condition:
+      feature: avg_days_since_last_login
+      operator: gt
+      threshold: 21.0
+    actions:
+      - action: "Win-back campaign with limited-time offer"
+        detail: "Dormant for 21+ days; urgent win-back needed."
+        priority: 1
+
+fallback_actions:
+  - action: "Schedule quarterly business review"
+    detail: "Default high-touch retention action."
+    priority: 3
+  - action: "Share new product updates newsletter"
+    detail: "Keep customer informed of fresh value."
+    priority: 3
